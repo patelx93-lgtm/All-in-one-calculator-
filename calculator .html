@@ -1,0 +1,143 @@
+<meta name='viewport' content='width=device-width, initial-scale=1'/><!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>All-in-One Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 40px;
+      background: #f4f7fb;
+    }
+    h1 {
+      color: #222;
+    }
+    nav {
+      margin-bottom: 20px;
+    }
+    nav button {
+      margin: 5px;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      background: #007BFF;
+      color: white;
+    }
+    nav button:hover { background: #0056b3; }
+    .box {
+      display: none;
+      background: white;
+      padding: 20px;
+      margin: 20px auto;
+      width: 320px;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    input, button.calc {
+      padding: 10px;
+      margin: 8px 0;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      width: 90%;
+    }
+    button.calc {
+      background: #28a745;
+      color: white;
+      cursor: pointer;
+    }
+    button.calc:hover { background: #1e7e34; }
+  </style>
+</head>
+<body>
+  <h1>📊 All-in-One Calculator</h1>
+  <nav>
+    <button onclick="showCalc('week')">Week Calculator</button>
+    <button onclick="showCalc('weeksDiff')">Weeks Between Dates</button>
+    <button onclick="showCalc('age')">Age Calculator</button>
+    <button onclick="showCalc('bmi')">BMI Calculator</button>
+  </nav>  <div id="week" class="box">
+    <h2>Week Number</h2>
+    <input type="date" id="dateInput">
+    <button class="calc" onclick="getWeekNumber()">Get Week Number</button>
+    <p id="weekResult"></p>
+  </div>  <div id="weeksDiff" class="box">
+    <h2>Weeks Between Dates</h2>
+    <input type="date" id="date1"> <br>
+    <input type="date" id="date2"> <br>
+    <button class="calc" onclick="getWeekDifference()">Calculate Difference</button>
+    <p id="diffResult"></p>
+  </div>  <div id="age" class="box">
+    <h2>Age Calculator</h2>
+    <input type="date" id="dob"> <br>
+    <button class="calc" onclick="calculateAge()">Calculate Age</button>
+    <p id="ageResult"></p>
+  </div>  <div id="bmi" class="box">
+    <h2>BMI Calculator</h2>
+    <input type="number" id="weight" placeholder="Weight (kg)"> <br>
+    <input type="number" id="height" placeholder="Height (cm)"> <br>
+    <button class="calc" onclick="calculateBMI()">Calculate BMI</button>
+    <p id="bmiResult"></p>
+  </div>  <script>
+    function showCalc(id) {
+      document.querySelectorAll('.box').forEach(b => b.style.display = 'none');
+      document.getElementById(id).style.display = 'block';
+    }
+
+    function getWeekNumber() {
+      const inputDate = new Date(document.getElementById('dateInput').value);
+      if (isNaN(inputDate)) {
+        document.getElementById('weekResult').innerText = "Please select a date.";
+        return;
+      }
+      const firstJan = new Date(inputDate.getFullYear(), 0, 1);
+      const days = Math.floor((inputDate - firstJan) / (24 * 60 * 60 * 1000));
+      const weekNumber = Math.ceil((days + firstJan.getDay() + 1) / 7);
+      document.getElementById('weekResult').innerText = "Week Number: " + weekNumber;
+    }
+
+    function getWeekDifference() {
+      const d1 = new Date(document.getElementById('date1').value);
+      const d2 = new Date(document.getElementById('date2').value);
+      if (isNaN(d1) || isNaN(d2)) {
+        document.getElementById('diffResult').innerText = "Please select both dates.";
+        return;
+      }
+      const diffTime = Math.abs(d2 - d1);
+      const diffWeeks = Math.floor(diffTime / (7 * 24 * 60 * 60 * 1000));
+      document.getElementById('diffResult').innerText = "Difference: " + diffWeeks + " weeks";
+    }
+
+    function calculateAge() {
+      const dob = new Date(document.getElementById('dob').value);
+      if (isNaN(dob)) {
+        document.getElementById('ageResult').innerText = "Please select your birthdate.";
+        return;
+      }
+      const today = new Date();
+      let age = today.getFullYear() - dob.getFullYear();
+      const m = today.getMonth() - dob.getMonth();
+      if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
+        age--;
+      }
+      document.getElementById('ageResult').innerText = "Your Age: " + age + " years";
+    }
+
+    function calculateBMI() {
+      const weight = parseFloat(document.getElementById('weight').value);
+      const height = parseFloat(document.getElementById('height').value) / 100;
+      if (isNaN(weight) || isNaN(height) || height === 0) {
+        document.getElementById('bmiResult').innerText = "Please enter valid values.";
+        return;
+      }
+      const bmi = (weight / (height * height)).toFixed(2);
+      let status = "";
+      if (bmi < 18.5) status = "Underweight";
+      else if (bmi < 24.9) status = "Normal";
+      else if (bmi < 29.9) status = "Overweight";
+      else status = "Obese";
+      document.getElementById('bmiResult').innerText = "Your BMI: " + bmi + " (" + status + ")";
+    }
+  </script></body>
+</html>
